@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+llama-index
+llama-index-llms-ollama
+llama-index-embeddings-huggingface
+chromadb
+sqlmodel
+python-multipart
+python-dotenv
+cryptography
+openai
+pydub

@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ],
+  "rewrites": [
+    { "source": "/session/:path*", "destination": "http://your-backend-url.com/session/:path*" },
+    { "source": "/client/:path*", "destination": "http://your-backend-url.com/client/:path*" },
+    { "source": "/org/:path*", "destination": "http://your-backend-url.com/org/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
