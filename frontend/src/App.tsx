@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Activity, ShieldAlert, FileText, Send, Database, CheckCircle2, AlertTriangle, Info, TrendingUp, Target, Brain, RefreshCcw, Building, Mic, Square, Lock } from 'lucide-react';
+import { useState } from 'react';
+import { Activity, ShieldAlert, FileText, Send, Database, CheckCircle2, AlertTriangle, TrendingUp, Target, Brain, RefreshCcw, Building, Mic, Square, Lock } from 'lucide-react';
 import axios from 'axios';
 import ClientHistory from './components/ClientHistory';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/clerk-react";
