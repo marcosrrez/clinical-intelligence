@@ -1,9 +1,17 @@
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
 from sqlmodel import Session, select
 from pydantic import BaseModel
 from typing import List, Optional, Dict
 import json
 from datetime import datetime
+import os
+import shutil
+import tempfile
+from openai import OpenAI
+from dotenv import load_dotenv
+
+# Load backend environment variables (Secrets)
+load_dotenv()
 
 from core.engine import ClinicalEngine
 from core.vector_store import VectorStoreManager
@@ -11,6 +19,9 @@ from core.database import create_db_and_tables, get_session, SessionRecord
 from core.security import CryptoManager
 
 app = FastAPI(title="Clinical Intelligence API")
+
+# Initialize OpenAI Client (using secure env var only)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # --- CORE SERVICES ---
 engine_service = ClinicalEngine()
@@ -46,16 +57,6 @@ class HistoricalSession(BaseModel):
 
 # --- ENDPOINTS ---
 
-from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
-import shutil
-import tempfile
-from openai import OpenAI
-
-# ... (existing imports)
-
-# Initialize OpenAI Client (can be pointed to local Whisper too)
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", "your_key_here"))
-
 @app.post("/session/transcribe")
 async def transcribe_audio(file: UploadFile = File(...)):
     try:
@@ -77,7 +78,6 @@ async def transcribe_audio(file: UploadFile = File(...)):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/")
-# ...
 async def root():
     return {"status": "Clinical Intelligence Engine Online"}
 
@@ -114,7 +114,6 @@ async def save_session(data: SaveSessionInput, db: Session = Depends(get_session
         db.refresh(record)
 
         # 3. SAVE TO VECTOR STORE (Reasoning Index)
-        # Note: Vector store gets raw text for semantic search. In High-Security mode, this would be hashed or on encrypted disk.
         full_metadata = data.metadata
         if data.markers:
             full_metadata["markers"] = json.dumps(data.markers)
@@ -145,7 +144,7 @@ async def get_client_history(client_id: str, db: Session = Depends(get_session))
                 id=rec.id,
                 session_id=rec.session_id,
                 created_at=rec.created_at.isoformat(),
-                text=dec_text, # Decrypted for UI
+                text=dec_text, 
                 markers=markers
             ))
         return history
