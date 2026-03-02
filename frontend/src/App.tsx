@@ -4,6 +4,8 @@ import axios from 'axios';
 import ClientHistory from './components/ClientHistory';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/clerk-react";
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
 interface SoapNote {
   subjective: string;
   objective: string;
@@ -56,7 +58,7 @@ function App() {
         
         setLoading(true);
         try {
-          const response = await axios.post('http://localhost:8000/session/transcribe', formData);
+          const response = await axios.post(`${API_URL}/session/transcribe`, formData);
           setRawText(prev => prev + " " + response.data.transcript);
         } catch (err) {
           console.error("Transcription failed", err);
@@ -81,7 +83,7 @@ function App() {
   const processNote = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8000/session/process', {
+      const response = await axios.post(`${API_URL}/session/process`, {
         org_id: 'default_org',
         client_id: 'client_123',
         raw_text: rawText
@@ -97,7 +99,7 @@ function App() {
   const saveSession = async () => {
     if (!result) return;
     try {
-      await axios.post('http://localhost:8000/session/save', {
+      await axios.post(`${API_URL}/session/save`, {
         org_id: 'default_org',
         client_id: 'client_123',
         session_id: `sess_${Date.now()}`,
@@ -121,7 +123,7 @@ function App() {
   const syncKB = async () => {
     setSyncing(true);
     try {
-      await axios.post('http://localhost:8000/org/default_org/sync_kb');
+      await axios.post(`${API_URL}/org/default_org/sync_kb`);
       alert("Knowledge Base Synced!");
     } catch (error) {
       console.error("Error syncing KB", error);

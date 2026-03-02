@@ -3,6 +3,7 @@ uvicorn
 pydantic
 llama-index
 llama-index-llms-ollama
+llama-index-llms-groq
 llama-index-embeddings-huggingface
 chromadb
 sqlmodel

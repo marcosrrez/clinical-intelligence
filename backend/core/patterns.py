@@ -19,8 +19,7 @@ class PatternEngine:
         
         Return JSON: primary_themes (list), emotional_intensity (1-10), goal_progress (1-10), risk_score (1-10).
         """
-        response = await self.llm.acomplete(prompt + "
-JSON Output:")
+        response = await self.llm.acomplete(prompt + "\nJSON Output:")
         try:
             import json
             clean_json = response.text.strip().replace("```json", "").replace("```", "").strip()

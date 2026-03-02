@@ -1,4 +1,4 @@
-from llama_index.llms.ollama import Ollama
+import os
 from llama_index.core import Settings
 import json
 from .org_manager import OrgManager
@@ -7,8 +7,14 @@ from .patterns import PatternEngine
 from .knowledge_base import KnowledgeBaseManager
 
 class ClinicalEngine:
-    def __init__(self, model="llama3", base_url="http://localhost:11434"):
-        self.llm = Ollama(model=model, base_url=base_url, request_timeout=240.0)
+    def __init__(self):
+        groq_key = os.getenv("GROQ_API_KEY")
+        if groq_key:
+            from llama_index.llms.groq import Groq
+            self.llm = Groq(model="llama-3.3-70b-versatile", api_key=groq_key)
+        else:
+            from llama_index.llms.ollama import Ollama
+            self.llm = Ollama(model="mistral:7b", base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"), request_timeout=600.0)
         self.org_manager = OrgManager()
         self.vector_store = VectorStoreManager()
         self.kb_manager = KnowledgeBaseManager()
@@ -80,5 +86,10 @@ class ClinicalEngine:
                 "audit": audit_json,
                 "markers": markers.dict()
             }
-        except Exception as e:
-            return {"error": "Merging failed", "scribe_raw": scribe_response, "audit_raw": audit_response}
+        except json.JSONDecodeError:
+            # LLM didn't return valid JSON — return raw responses so the frontend can still show something
+            return {
+                "structured_note": {"subjective": scribe_response, "objective": "", "assessment": "", "plan": "", "risk_assessment": ""},
+                "audit": {"liability_flags": [], "clinical_clarity_score": 0.5, "suggestions": ["Raw LLM output returned — JSON parsing failed"], "risk_level": "Low"},
+                "markers": markers.dict()
+            }

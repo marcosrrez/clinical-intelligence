@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session, select
 from pydantic import BaseModel
 from typing import List, Optional, Dict
@@ -19,6 +20,16 @@ from core.database import create_db_and_tables, get_session, SessionRecord
 from core.security import CryptoManager
 
 app = FastAPI(title="Clinical Intelligence API")
+
+# --- CORS ---
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:5173").split(",")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Initialize OpenAI Client (using secure env var only)
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))

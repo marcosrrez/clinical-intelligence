@@ -10,6 +10,7 @@ services:
       - ./data:/app/data
     environment:
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - CORS_ORIGINS=http://localhost:3000
     extra_hosts:
       - "host.docker.internal:host-gateway"
 

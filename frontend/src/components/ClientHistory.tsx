@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
-import { 
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { Activity, TrendingUp, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 interface HistoricalSession {
   id: number;
@@ -26,7 +28,7 @@ const ClientHistory = () => {
     // Mocking client ID for demo
     const fetchHistory = async () => {
       try {
-        const response = await axios.get('http://localhost:8000/client/client_123/history');
+        const response = await axios.get(`${API_URL}/client/client_123/history`);
         // Reverse for chronological order (API returns newest first)
         setData(response.data.reverse());
       } catch (error) {
@@ -42,7 +44,7 @@ const ClientHistory = () => {
 
   return (
     <div className="flex-1 overflow-auto p-8 flex flex-col gap-8">
-      
+
       {/* KPI Cards */}
       <div className="grid grid-cols-3 gap-6">
         <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
@@ -77,44 +79,44 @@ const ClientHistory = () => {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-            <XAxis 
-              dataKey="created_at" 
-              tickFormatter={(date) => new Date(date).toLocaleDateString()} 
+            <XAxis
+              dataKey="created_at"
+              tickFormatter={(date) => new Date(date).toLocaleDateString()}
               stroke="#94a3b8"
               fontSize={12}
               tickLine={false}
               axisLine={false}
             />
             <YAxis stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} domain={[0, 10]} />
-            <Tooltip 
+            <Tooltip
               contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
               itemStyle={{ fontSize: '12px', fontWeight: 600 }}
               labelStyle={{ fontSize: '10px', color: '#64748b', marginBottom: '4px' }}
             />
             <Legend wrapperStyle={{ paddingTop: '20px' }} />
-            <Line 
-              type="monotone" 
-              dataKey="markers.emotional_intensity" 
-              name="Emotional Intensity" 
-              stroke="#3b82f6" 
+            <Line
+              type="monotone"
+              dataKey="markers.emotional_intensity"
+              name="Emotional Intensity"
+              stroke="#3b82f6"
               strokeWidth={3}
               dot={{ r: 4, strokeWidth: 2 }}
               activeDot={{ r: 6 }}
             />
-            <Line 
-              type="monotone" 
-              dataKey="markers.goal_progress" 
-              name="Goal Progress" 
-              stroke="#10b981" 
+            <Line
+              type="monotone"
+              dataKey="markers.goal_progress"
+              name="Goal Progress"
+              stroke="#10b981"
               strokeWidth={3}
               dot={{ r: 4, strokeWidth: 2 }}
               activeDot={{ r: 6 }}
             />
-            <Line 
-              type="monotone" 
-              dataKey="markers.risk_score" 
-              name="Risk Level" 
-              stroke="#f59e0b" 
+            <Line
+              type="monotone"
+              dataKey="markers.risk_score"
+              name="Risk Level"
+              stroke="#f59e0b"
               strokeWidth={2}
               strokeDasharray="5 5"
               dot={false}

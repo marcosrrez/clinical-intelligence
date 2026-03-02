@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, create_engine, Session as SQLSession
 from datetime import datetime
 from typing import Optional
 from pathlib import Path
+from .config import DATA_DIR
 
 # --- MODELS ---
 class SessionRecord(SQLModel, table=True):
@@ -22,7 +23,7 @@ class SessionRecord(SQLModel, table=True):
     primary_themes_csv: str  # Comma-separated list
 
 # --- DATABASE SETUP ---
-sqlite_file_name = "data/clinical.db"
+sqlite_file_name = str(DATA_DIR / "clinical.db")
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 engine = create_engine(sqlite_url, connect_args={"check_same_thread": False})

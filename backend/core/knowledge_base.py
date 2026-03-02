@@ -2,11 +2,12 @@ import os
 from pathlib import Path
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader, StorageContext, load_index_from_storage
 from llama_index.core.node_parser import SentenceSplitter
+from .config import DATA_DIR
 
 class KnowledgeBaseManager:
-    def __init__(self, base_kb_path: str = "data/knowledge_bases", storage_path: str = "data/vector_store/indices"):
-        self.base_kb_path = Path(base_kb_path)
-        self.storage_path = Path(storage_path)
+    def __init__(self, base_kb_path: str = None, storage_path: str = None):
+        self.base_kb_path = Path(base_kb_path) if base_kb_path else DATA_DIR / "knowledge_bases"
+        self.storage_path = Path(storage_path) if storage_path else DATA_DIR / "vector_store" / "indices"
         self.storage_path.mkdir(parents=True, exist_ok=True)
 
     def _get_index_path(self, org_id: str) -> Path:

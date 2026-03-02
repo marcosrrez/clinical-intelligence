@@ -2,10 +2,11 @@ import os
 import json
 from pathlib import Path
 from typing import Optional, Dict
+from .config import DATA_DIR
 
 class OrgManager:
-    def __init__(self, base_path: str = "data/org_configs"):
-        self.base_path = Path(base_path)
+    def __init__(self, base_path: str = None):
+        self.base_path = Path(base_path) if base_path else DATA_DIR / "org_configs"
 
     def get_org_config(self, org_id: str) -> Optional[Dict]:
         config_path = self.base_path / org_id / "config.json"

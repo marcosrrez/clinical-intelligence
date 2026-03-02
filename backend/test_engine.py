@@ -13,9 +13,8 @@ async def test_processing():
     """
     
     print("Processing test session...")
-    result = await engine.process_session("default_org", test_raw_text)
-    print("
---- LLM RESPONSE ---")
+    result = await engine.process_session("default_org", "test_client", test_raw_text)
+    print("\n--- LLM RESPONSE ---")
     print(result)
 
 if __name__ == "__main__":

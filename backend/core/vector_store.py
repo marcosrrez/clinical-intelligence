@@ -1,9 +1,12 @@
 import chromadb
 from chromadb.config import Settings
 from pathlib import Path
+from .config import DATA_DIR
 
 class VectorStoreManager:
-    def __init__(self, base_path: str = "data/vector_store"):
+    def __init__(self, base_path: str = None):
+        if base_path is None:
+            base_path = str(DATA_DIR / "vector_store")
         self.base_path = Path(base_path)
         self.client = chromadb.PersistentClient(path=str(self.base_path))
 

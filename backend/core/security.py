@@ -1,10 +1,11 @@
 from cryptography.fernet import Fernet
 import os
 from pathlib import Path
+from .config import DATA_DIR
 
 class CryptoManager:
-    def __init__(self, key_path: str = "data/keys"):
-        self.key_path = Path(key_path)
+    def __init__(self, key_path: str = None):
+        self.key_path = Path(key_path) if key_path else DATA_DIR / "keys"
         self.key_path.mkdir(parents=True, exist_ok=True)
         self.key_file = self.key_path / "secret.key"
         self.cipher_suite = self._load_key()
